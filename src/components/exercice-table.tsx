@@ -1,3 +1,4 @@
+// components/ExerciseTable.tsx
 'use client';
 
 import { useMemo } from 'react';
@@ -98,7 +99,7 @@ export function ExerciseTable({ exercice, workouts }: ExerciseTableProps) {
                     const serie = session.series.get(i + 1);
                     return (
                       <TableCell key={i}>
-                        {serie ? formatSet(serie.poids, serie.repetitions) : '-'}
+                        {serie ? formatSet(serie.poids, serie.repetitions, serie.notes) : '-'}
                       </TableCell>
                     );
                   })}

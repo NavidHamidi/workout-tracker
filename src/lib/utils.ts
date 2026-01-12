@@ -176,7 +176,12 @@ export function formatReps(reps: number | null): string {
 }
 
 // Format set display (weight × reps)
-export function formatSet(poids: number | null, reps: number | null): string {
+export function formatSet(poids: number | null, reps: number | null, notes?: string | null): string {
+  // Si c'est une note de temps (ex: "3min", "20s")
+  if (notes && notes.match(/^\d+(?:min|s)/)) {
+    return notes;
+  }
+  
   if (poids === null && reps === null) return '-';
   if (poids === 0) return `Vide × ${formatReps(reps)}`;
   return `${formatWeight(poids)} × ${formatReps(reps)}`;

@@ -1,7 +1,7 @@
 // app/api/parse-workout/route.ts
 
 import { NextRequest, NextResponse } from 'next/server';
-import { parseWorkoutText } from '@/lib/claude/client';
+import { parseWorkoutText, validateWorkouts } from '@/lib/parser';
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,6 +15,18 @@ export async function POST(request: NextRequest) {
     }
 
     const workouts = await parseWorkoutText(text);
+    const validation = validateWorkouts(workouts);
+
+    if (!validation.isValid) {
+      return NextResponse.json(
+        { 
+          error: 'Parsing errors',
+          details: validation.errors.join(', '),
+          workouts: [] // Retourner quand même ce qui a été parsé
+        },
+        { status: 400 }
+      );
+    }
 
     return NextResponse.json({ 
       success: true,
