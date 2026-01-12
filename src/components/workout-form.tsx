@@ -1,4 +1,3 @@
-// components/WorkoutForm.tsx
 'use client';
 
 import { useState } from 'react';
@@ -6,7 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
-import { createWorkouts, getCurrentUser } from '@/lib/supabase/client';
+import { createWorkouts } from '@/lib/supabase/client';
+import { getCurrentUser } from '@/lib/supabase/auth';
 import type { WorkoutInput } from '@/types/workout';
 
 interface WorkoutFormProps {
@@ -26,7 +26,7 @@ export function WorkoutForm({ onSuccess }: WorkoutFormProps) {
     setPreview(null);
 
     try {
-      const response = await fetch('/api/parse-workout', {
+      const response = await fetch('/api/workout', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

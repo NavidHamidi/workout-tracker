@@ -6,9 +6,11 @@ const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
 export const supabase = createClient(url, anonKey)
 
+const workoutTable = 'wt_workouts';
+
 export async function getWorkouts(userId: string): Promise<Workout[]> {
   const { data, error } = await supabase
-    .from('workouts')
+    .from(workoutTable)
     .select('*')
     .eq('user_id', userId)
     .order('date', { ascending: false })
@@ -25,7 +27,7 @@ export async function getWorkoutsByDateRange(
   endDate: string
 ): Promise<Workout[]> {
   const { data, error } = await supabase
-    .from('workouts')
+    .from(workoutTable)
     .select('*')
     .eq('user_id', userId)
     .gte('date', startDate)
@@ -43,7 +45,7 @@ export async function getWorkoutsByExercise(
   exercice: string
 ): Promise<Workout[]> {
   const { data, error } = await supabase
-    .from('workouts')
+    .from(workoutTable)
     .select('*')
     .eq('user_id', userId)
     .eq('exercice', exercice)
@@ -59,7 +61,7 @@ export async function createWorkout(
   workout: WorkoutInput
 ): Promise<Workout> {
   const { data, error } = await supabase
-    .from('workouts')
+    .from(workoutTable)
     .insert({
       user_id: userId,
       ...workout,
@@ -81,7 +83,7 @@ export async function createWorkouts(
   }));
 
   const { data, error } = await supabase
-    .from('workouts')
+    .from(workoutTable)
     .insert(workoutsWithUserId)
     .select();
 
@@ -94,7 +96,7 @@ export async function updateWorkout(
   updates: Partial<WorkoutInput>
 ): Promise<Workout> {
   const { data, error } = await supabase
-    .from('workouts')
+    .from(workoutTable)
     .update(updates)
     .eq('id', id)
     .select()
@@ -106,7 +108,7 @@ export async function updateWorkout(
 
 export async function deleteWorkout(id: string): Promise<void> {
   const { error } = await supabase
-    .from('workouts')
+    .from(workoutTable)
     .delete()
     .eq('id', id);
 
@@ -118,7 +120,7 @@ export async function deleteWorkoutsByDate(
   date: string
 ): Promise<void> {
   const { error } = await supabase
-    .from('workouts')
+    .from(workoutTable)
     .delete()
     .eq('user_id', userId)
     .eq('date', date);
@@ -130,7 +132,7 @@ export async function deleteWorkoutsByDate(
 
 export async function getUniqueExercises(userId: string): Promise<string[]> {
   const { data, error } = await supabase
-    .from('workouts')
+    .from(workoutTable)
     .select('exercice')
     .eq('user_id', userId);
 
@@ -142,7 +144,7 @@ export async function getUniqueExercises(userId: string): Promise<string[]> {
 
 export async function getWorkoutDates(userId: string): Promise<string[]> {
   const { data, error } = await supabase
-    .from('workouts')
+    .from(workoutTable)
     .select('date')
     .eq('user_id', userId)
     .order('date', { ascending: false });
@@ -155,7 +157,7 @@ export async function getWorkoutDates(userId: string): Promise<string[]> {
 
 export async function getExerciseStats(userId: string, exercice: string) {
   const { data, error } = await supabase
-    .from('workouts')
+    .from(workoutTable)
     .select('date, poids, repetitions')
     .eq('user_id', userId)
     .eq('exercice', exercice)
@@ -166,14 +168,3 @@ export async function getExerciseStats(userId: string, exercice: string) {
   return data || [];
 }
 
-// Auth helpers
-
-export async function getCurrentUser() {
-  const { data: { user } } = await supabase.auth.getUser();
-  return user;
-}
-
-export async function signOut() {
-  const { error } = await supabase.auth.signOut();
-  if (error) throw error;
-}

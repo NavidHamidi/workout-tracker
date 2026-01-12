@@ -36,7 +36,7 @@ Tu dois retourner UNIQUEMENT un JSON valide (sans markdown, sans backticks) avec
 }
 
 Règles importantes:
-1. Convertir les dates au format YYYY-MM-DD (assume 2025 si année non précisée)
+1. Convertir les dates au format YYYY-MM-DD (assume 2025 ou 2026 si année non précisée en fonction de la date du jour)
 2. "à vide" = poids: 0
 3. Si pas de répétitions mentionnées = repetitions: null
 4. Si "X" ou pas de données = poids: null, repetitions: null
@@ -59,6 +59,8 @@ Réponds UNIQUEMENT avec le JSON, rien d'autre.`;
         },
       ],
     });
+
+    console.log('Claude response:', message);
 
     const content = message.content[0];
     if (content.type !== 'text') {
